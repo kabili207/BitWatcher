@@ -1,14 +1,26 @@
 {
     "media": [
         {
-            "defName": "IMAGE_MENU_ICON",
-            "type": "png",
-            "file": "images/menu_icon_bitwallet.png"
+            "defName": "FONT_DIAVLO_15",
+            "type": "font",
+            "file": "fonts/Diavlo_BOOK_II_37.ttf"
         },
         {
-            "defName": "FONT_DIAVLO_LIGHT_15",
+            "characterRegex": "[0-9:. +-]",
+            "defName": "FONT_DIAVLO_MEDIUM_29",
             "type": "font",
-            "file": "fonts/Diavlo_LIGHT_II_37.ttf"
+            "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
+        },
+        {
+            "defName": "FONT_DIAVLO_MEDIUM_21",
+            "type": "font",
+            "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
+        },
+        {
+            "characterRegex": "[0-9:. +-]",
+            "defName": "FONT_DIAVLO_MEDIUM_39",
+            "type": "font",
+            "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
         },
         {
             "characterRegex": "[0-9:.]",
@@ -17,15 +29,14 @@
             "file": "fonts/Diavlo_BLACK_II_37.ttf"
         },
         {
-            "characterRegex": "[0-9:. +\\-]",
-            "defName": "FONT_DIAVLO_MEDIUM_39",
+            "defName": "FONT_DIAVLO_LIGHT_15",
             "type": "font",
-            "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
+            "file": "fonts/Diavlo_LIGHT_II_37.ttf"
         },
         {
-            "defName": "FONT_DIAVLO_MEDIUM_21",
-            "type": "font",
-            "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
+            "defName": "IMAGE_MENU_ICON",
+            "type": "png",
+            "file": "images/menu_icon_bitwallet.png"
         }
     ],
     "friendlyVersion": "VERSION",

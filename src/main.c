@@ -28,7 +28,6 @@ PBL_APP_INFO(MY_UUID,
 #define BTC_KEY_ASK 3
 #define BTC_KEY_BID 4
 #define BTC_KEY_LAST 5
-#define BTC_KEY_VOLUME 6
 
 #define BTC_HTTP_COOKIE 1648231298
 
@@ -43,6 +42,11 @@ TextLayer text_buy_label_layer;
 TextLayer text_buy_price_layer;
 TextLayer text_sell_label_layer;
 TextLayer text_sell_price_layer;
+
+GFont font_last_price_small;
+GFont font_last_price_large;
+
+bool using_smaller_font = false;
 
 void request_btc();
 void handle_timer(AppContextRef app_ctx, AppTimerHandle handle, uint32_t cookie);
@@ -66,19 +70,28 @@ void success(int32_t cookie, int http_status, DictionaryIterator* received, void
 		text_layer_set_text(&text_currency_layer, str);
 	}
 	
-	Tuple* price_tuple = dict_find(received, BTC_KEY_LAST);
-	if(price_tuple) {
-		text_layer_set_text(&text_price_layer, price_tuple->value->cstring);
-	}
-	
-	Tuple* buy_tuple = dict_find(received, BTC_KEY_BID);
-	if(buy_tuple) {
-		text_layer_set_text(&text_buy_price_layer, buy_tuple->value->cstring);
-	}
-	
-	Tuple* sell_tuple = dict_find(received, BTC_KEY_ASK);
-	if(sell_tuple) {
-		text_layer_set_text(&text_sell_price_layer, sell_tuple->value->cstring);
+	Tuple *tuple = dict_read_first(received);
+	while (tuple) {
+		switch (tuple->key) {
+			case BTC_KEY_LAST:
+				text_layer_set_text(&text_price_layer, tuple->value->cstring);
+				break;
+			case BTC_KEY_BID:
+				text_layer_set_text(&text_buy_price_layer, tuple->value->cstring);
+				break;
+			case BTC_KEY_ASK:
+				text_layer_set_text(&text_sell_price_layer, tuple->value->cstring);
+				size_t len = strlen(tuple->value->cstring);
+				if (len > 6 && !using_smaller_font) {
+					text_layer_set_font(&text_price_layer, font_last_price_small);
+					using_smaller_font = true;
+				} else if (len <= 6 && using_smaller_font) {
+					text_layer_set_font(&text_price_layer, font_last_price_large);
+					using_smaller_font = false;
+				}
+				break;
+		}
+		tuple = dict_read_next(received);
 	}
 }
 
@@ -98,11 +111,14 @@ void handle_init(AppContextRef ctx) {
 	window_stack_push(&window, true /* Animated */);
 	window_set_background_color(&window, GColorBlack);
 	
+	font_last_price_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_29));
+	font_last_price_large = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_39));
+	
 	text_layer_init(&text_price_layer, window.layer.frame);
 	text_layer_set_text_color(&text_price_layer, GColorWhite);
 	text_layer_set_background_color(&text_price_layer, GColorClear);
 	layer_set_frame(&text_price_layer.layer, GRect(8, 0, 144-8, 168-0));
-	text_layer_set_font(&text_price_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_39)));
+	text_layer_set_font(&text_price_layer, font_last_price_large);
 	text_layer_set_text(&text_price_layer, "---");
 	layer_add_child(&window.layer, &text_price_layer.layer);
 
@@ -110,7 +126,7 @@ void handle_init(AppContextRef ctx) {
 	text_layer_set_text_color(&text_currency_layer, GColorWhite);
  	text_layer_set_background_color(&text_currency_layer, GColorClear);
  	layer_set_frame(&text_currency_layer.layer, GRect(8, 41, 144-8, 168-41));
-	text_layer_set_font(&text_currency_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_LIGHT_15)));
+	text_layer_set_font(&text_currency_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_15)));
 	text_layer_set_text(&text_currency_layer, "--- / BTC");
 	layer_add_child(&window.layer, &text_currency_layer.layer);
 
@@ -118,7 +134,7 @@ void handle_init(AppContextRef ctx) {
 	text_layer_set_text_color(&text_buy_label_layer, GColorWhite);
  	text_layer_set_background_color(&text_buy_label_layer, GColorClear);
  	layer_set_frame(&text_buy_label_layer.layer, GRect(8, 60, 144-8, 168-60));
-	text_layer_set_font(&text_buy_label_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_LIGHT_15)));
+	text_layer_set_font(&text_buy_label_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_15)));
 	text_layer_set_text(&text_buy_label_layer, "BUY");
 	layer_add_child(&window.layer, &text_buy_label_layer.layer);
 
@@ -126,7 +142,7 @@ void handle_init(AppContextRef ctx) {
 	text_layer_set_text_color(&text_buy_price_layer, GColorWhite);
  	text_layer_set_background_color(&text_buy_price_layer, GColorClear);
  	layer_set_frame(&text_buy_price_layer.layer, GRect(56, 60, 144-56, 168-60));
-	text_layer_set_font(&text_buy_price_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_LIGHT_15)));
+	text_layer_set_font(&text_buy_price_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_15)));
 	text_layer_set_text(&text_buy_price_layer, "---");
 	layer_add_child(&window.layer, &text_buy_price_layer.layer);
 
@@ -134,7 +150,7 @@ void handle_init(AppContextRef ctx) {
 	text_layer_set_text_color(&text_sell_label_layer, GColorWhite);
  	text_layer_set_background_color(&text_sell_label_layer, GColorClear);
  	layer_set_frame(&text_sell_label_layer.layer, GRect(8, 78, 144-8, 168-78));
-	text_layer_set_font(&text_sell_label_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_LIGHT_15)));
+	text_layer_set_font(&text_sell_label_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_15)));
 	text_layer_set_text(&text_sell_label_layer, "SELL");
 	layer_add_child(&window.layer, &text_sell_label_layer.layer);
 
@@ -142,7 +158,7 @@ void handle_init(AppContextRef ctx) {
 	text_layer_set_text_color(&text_sell_price_layer, GColorWhite);
  	text_layer_set_background_color(&text_sell_price_layer, GColorClear);
  	layer_set_frame(&text_sell_price_layer.layer, GRect(56, 78, 144-56, 168-78));
-	text_layer_set_font(&text_sell_price_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_LIGHT_15)));
+	text_layer_set_font(&text_sell_price_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_15)));
 	text_layer_set_text(&text_sell_price_layer, "---");
 	layer_add_child(&window.layer, &text_sell_price_layer.layer);
 	
