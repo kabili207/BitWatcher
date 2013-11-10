@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	<title>BitWatcher Config</title>
+	
+	<script type="text/javascript">
+		var currencies;
+		var ddlCurrency;
+		
+		var params = {};
+
+		if (location.search) {
+			var parts = location.search.substring(1).split('&');
+
+			for (var i = 0; i < parts.length; i++) {
+				var nv = parts[i].split('=');
+				if (!nv[0]) continue;
+				params[decodeURIComponent(nv[0])] = decodeURIComponent(nv[1]) || true;
+			}
+		}
+		
+		function readConfig() {
+			if(params["config"] != null) {
+				var ddlCurrency = document.getElementById("ddlCurrency");
+				var ddlExchange = document.getElementById("ddlExchange");
+				var chkAverage = document.getElementById("chkAverage");
+				var chkNoGox = document.getElementById("chkNoGox");
+				var config = JSON.parse(params["config"]);
+				ddlCurrency.value = config.currency;
+				currencyChanged();
+				ddlExchange.value = config.exchange;
+				chkAverage.checked = config.average;
+				chkNoGox.checked = config.noGox;
+			}
+		}
+		
+		function getExchanges() {
+			var req = new XMLHttpRequest();
+			req.open('GET', "https://api.bitcoinaverage.com/all", true);
+			req.onreadystatechange = function(e) {
+				if (req.readyState == 4) {
+					if(req.status == 200) {
+						currencies = JSON.parse(req.responseText);
+						
+						buildCurrencyDdl();
+						readConfig();
+						averageChanged();
+						
+					} else {
+						console.log("Error " + req.status);
+					}
+				}
+			}
+			req.send(null);
+		}
+		
+		function buildCurrencyDdl() {
+			var ddlCurrency = document.getElementById("ddlCurrency");
+			
+			for(var curr in currencies) {
+				if(curr.length == 3) {
+					var opt = document.createElement("option");
+					opt.text = curr;
+					opt.value = curr;
+					ddlCurrency.options.add(opt);
+				}
+			}
+			currencyChanged();
+		}
+		
+		function currencyChanged() {
+			var ddlCurrency = document.getElementById("ddlCurrency");
+			var ddlExchange = document.getElementById("ddlExchange");
+			
+			var curr = ddlCurrency.options[ddlCurrency.selectedIndex].value;
+			var exchanges = currencies[curr].exchanges;
+			
+			ddlExchange.options.length = 0;
+			for(var ex in exchanges) {
+				var opt = document.createElement("option");
+				opt.text = ex;
+				opt.value = ex;
+				ddlExchange.options.add(opt);
+			}
+			
+		}
+		
+		function averageChanged() {
+			var ddlExchange = document.getElementById("ddlExchange");
+			var chkAverage = document.getElementById("chkAverage");
+			var chkNoGox = document.getElementById("chkNoGox");
+			
+			chkNoGox.disabled = !chkAverage.checked;
+			ddlExchange.disabled = chkAverage.checked;
+		}
+		
+		function save() {
+			var ddlCurrency = document.getElementById("ddlCurrency");
+			var ddlExchange = document.getElementById("ddlExchange");
+			var chkAverage = document.getElementById("chkAverage");
+			var chkNoGox = document.getElementById("chkNoGox");
+			
+			var config = {
+				currency: ddlCurrency.options[ddlCurrency.selectedIndex].value,
+				exchange: chkAverage.checked ? "" : ddlExchange.options[ddlExchange.selectedIndex].value,
+				average: chkAverage.checked,
+				noGox: chkNoGox.checked
+			}
+			
+			document.href = "pebblejs:///close#" + JSON.stringify(config);
+			
+		}
+		
+	</script>
+
+</head>
+
+<body>
+
+	<label for="ddlCurrency">Currency</label>
+	<select id="ddlCurrency" onchange="currencyChanged()"></select>
+	<br />
+	
+	<input type="checkbox" id="chkAverage" onclick="averageChanged()" />
+	<label for="chkAverage">Average</label>
+	<br />
+	
+	<input type="checkbox" id="chkNoGox" />
+	<label for="chkNoGox">Ignore MtGox</label>
+	<br />
+	
+	<label for="ddlExchange">Exchange</label>
+	<select id="ddlExchange"></select>
+
+	<br />
+
+	<input type="button" onclick="save()" value="Save" />
+
+	<script type="text/javascript">
+		getExchanges();
+		
+	</script>
+
+</body>
+
+</html>

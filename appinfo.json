@@ -1,11 +1,18 @@
 {
     "versionLabel": "1.0",
     "uuid": "0A477443-FB0A-4039-967F-7608276EEC45",
-    "appKeys": {},
+    "appKeys": {
+	    "currency": 1,
+	    "exchange": 2,
+	    "ask": 3,
+	    "bid": 4,
+	    "last": 5
+	},
     "longName": "BitWatcher",
     "versionCode": 1,
     "shortName": "BitWatcher",
     "companyName": "kabili207",
+    "capabilities": [ "configurable" ],
     "watchapp": {
         "watchface": true
     },
