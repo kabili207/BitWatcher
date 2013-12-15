@@ -76,14 +76,14 @@ Pebble.addEventListener("showConfiguration", function() {
 	console.log("read options: " + JSON.stringify(options));
 	console.log("showing configuration");
 	var uri = 'https://raw.github.com/kabili207/BitWatcher/master/config.html?config=' + encodeURIComponent(JSON.stringify(options));
-	//var uri = 'http://zyrenth.com/config.html?config=' + encodeURIComponent(JSON.stringify(options));
+	//var uri = 'http://zyrenth.com/~kabili/config.html?config=' + encodeURIComponent(JSON.stringify(options));
 	Pebble.openURL(uri);
 });
 
-Pebble.addEventListener("configurationClosed", function(e) {
+Pebble.addEventListener("webviewclosed", function(e) {
 	console.log("configuration closed");
 	if (e.response != '') {
-		var options = JSON.parse(e.configurationData);
+		var options = JSON.parse(e.response);
 		console.log("storing options: " + JSON.stringify(options));
 		window.localStorage.setItem('options', JSON.stringify(options));
 		getPrice();
