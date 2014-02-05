@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	<title>BitWatcher Config</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+	
+	
+	<script type="text/javascript">
+		var currencies;
+		var ddlCurrency;
+		
+		var params = {};
+
+		if (location.search) {
+			var parts = location.search.substring(1).split('&');
+
+			for (var i = 0; i < parts.length; i++) {
+				var nv = parts[i].split('=');
+				if (!nv[0]) continue;
+				params[decodeURIComponent(nv[0])] = decodeURIComponent(nv[1]) || true;
+			}
+		}
+		
+		$(document).bind('pageinit', function() {
+			getExchanges();
+		});
+		
+		function readConfig() {
+			if(params["config"] != null) {
+				var ddlCurrency = document.getElementById("ddlCurrency");
+				var ddlExchange = document.getElementById("ddlExchange");
+				var chkAverage = document.getElementById("chkAverage");
+				var chkNoGox = document.getElementById("chkNoGox");
+				var config = JSON.parse(params["config"]);
+				ddlCurrency.value = config.currency;
+				$(ddlCurrency).selectmenu('refresh', true);
+				currencyChanged();
+				ddlExchange.value = config.exchange;
+				chkAverage.checked = config.average;
+				chkNoGox.checked = config.noGox;
+				$(chkAverage).checkboxradio('refresh');
+				$(chkNoGox).checkboxradio('refresh');
+			}
+		}
+		
+		function getExchanges() {
+			var req = new XMLHttpRequest();
+			req.open('GET', "https://api.bitcoinaverage.com/all", true);
+			req.onreadystatechange = function(e) {
+				if (req.readyState == 4) {
+					if(req.status == 200) {
+						currencies = JSON.parse(req.responseText);
+						
+						buildCurrencyDdl();
+						readConfig();
+						averageChanged();
+						
+					} else {
+						console.log("Error " + req.status);
+					}
+				}
+			}
+			req.send(null);
+		}
+		
+		function buildCurrencyDdl() {
+			var ddlCurrency = document.getElementById("ddlCurrency");
+			
+			for(var curr in currencies) {
+				if(curr.length == 3) {
+					var opt = document.createElement("option");
+					opt.text = curr;
+					opt.value = curr;
+					ddlCurrency.options.add(opt);
+				}
+			}
+			$(ddlCurrency).selectmenu('refresh', true);
+			currencyChanged();
+		}
+		
+		function currencyChanged() {
+			var ddlCurrency = document.getElementById("ddlCurrency");
+			var ddlExchange = document.getElementById("ddlExchange");
+			
+			var curr = ddlCurrency.options[ddlCurrency.selectedIndex].value;
+			var exchanges = currencies[curr].exchanges;
+			
+			ddlExchange.options.length = 0;
+			for(var ex in exchanges) {
+				var opt = document.createElement("option");
+				opt.text = ex;
+				opt.value = ex;
+				ddlExchange.options.add(opt);
+			}
+			$(ddlExchange).selectmenu('refresh', true);
+		}
+		
+		function averageChanged() {
+			var ddlExchange = document.getElementById("ddlExchange");
+			var chkAverage = document.getElementById("chkAverage");
+			var chkNoGox = document.getElementById("chkNoGox");
+			
+			chkNoGox.disabled = !chkAverage.checked;
+			ddlExchange.disabled = chkAverage.checked;
+			$(chkNoGox).checkboxradio('refresh');
+			// Refresh doesn't seem to update the disabled status...
+			$(ddlExchange).selectmenu(ddlExchange.disabled ? 'disable' : 'enable');
+			return true;
+		}
+		
+		function save() {
+			var ddlCurrency = document.getElementById("ddlCurrency");
+			var ddlExchange = document.getElementById("ddlExchange");
+			var chkAverage = document.getElementById("chkAverage");
+			var chkNoGox = document.getElementById("chkNoGox");
+			
+			var config = {
+				currency: ddlCurrency.options[ddlCurrency.selectedIndex].value,
+				exchange: chkAverage.checked ? "" : ddlExchange.options[ddlExchange.selectedIndex].value,
+				average: chkAverage.checked,
+				noGox: chkNoGox.checked
+			}
+			
+			window.location.href = "pebblejs:///close#" + JSON.stringify(config);
+			
+		}
+		
+	</script>
+
+</head>
+
+<body>
+
+	<div data-role="page">
+		<div data-role="content">
+			<label for="ddlCurrency">Currency</label>
+			<select id="ddlCurrency" onchange="currencyChanged()"></select>			
+			
+			<input type="checkbox" id="chkAverage" onclick="averageChanged()" />
+			<label for="chkAverage">Average</label>
+			
+			<input type="checkbox" id="chkNoGox" />
+			<label for="chkNoGox">Ignore MtGox</label>
+			
+			<label for="ddlExchange">Exchange</label>
+			<select id="ddlExchange"></select>
+
+			<br />
+
+			<input type="button" onclick="save()" value="Save" />
+
+		</div>
+		<script type="text/javascript">
+			
+			
+		</script>
+	</div>
+</body>
+
+</html>
