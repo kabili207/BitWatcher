@@ -75,7 +75,7 @@ Pebble.addEventListener("showConfiguration", function() {
 	var options = getOptions();
 	console.log("read options: " + JSON.stringify(options));
 	console.log("showing configuration");
-	var uri = 'https://raw.github.com/kabili207/BitWatcher/master/config.html?config=' + encodeURIComponent(JSON.stringify(options));
+	var uri = 'http://kabili207.github.io/BitWatcher/config.html?config=' + encodeURIComponent(JSON.stringify(options));
 	//var uri = 'http://zyrenth.com/~kabili/config.html?config=' + encodeURIComponent(JSON.stringify(options));
 	Pebble.openURL(uri);
 });
