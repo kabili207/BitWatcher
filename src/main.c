@@ -40,7 +40,7 @@ static void set_timer();
 //}
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
-	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error: %d", app_message_error);
+	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error: %d, %d", app_message_error, dict_error);
 }
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
@@ -208,8 +208,9 @@ static void window_load(Window *window) {
 	app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values),
 				  sync_tuple_changed_callback, sync_error_callback, NULL);
 	
-	send_cmd();
-	set_timer();
+	//send_cmd();
+	timer = app_timer_register(2000, timer_callback, NULL);
+	//set_timer();
 }
 
 

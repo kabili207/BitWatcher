@@ -1,4 +1,5 @@
 var initialized = false;
+var configuring = false;
 
 function getOptions() {
 	var options = JSON.parse(window.localStorage.getItem('options'));
@@ -37,16 +38,18 @@ function getPrice() {
 					rates = response[options.exchange].rates;
 				var message = {
 					"currency": options.currency,
-					"exchange" : options.average ? (options.noGox ? " (no mtgox)" : "") : options.exchange,
+					"exchange" : options.average ? "average" + (options.noGox ? " (no mtgox)" : "") : options.exchange,
 					"ask": rates.ask.toString(),
 					"bid": rates.bid.toString(),
 					"last": rates.last.toString()
 				};
-				
-				console.log("Sending...");
-				console.log(JSON.stringify(message));
-				Pebble.sendAppMessage(message);
-				
+				if(!configuring){
+					console.log("Sending...");
+					console.log(JSON.stringify(message));
+					Pebble.sendAppMessage(message);
+				} else {
+					console.log("Configuration open. Cancelling update.");
+				}
 			} else {
 				console.log("Error " + req.status);
 			}
@@ -56,19 +59,15 @@ function getPrice() {
 }
 
 Pebble.addEventListener("ready", function(e) {
-	console.log("connect!" + e.ready);
+	console.log("connect! " + e.ready);
 	console.log(e.type);
-	initialized = true;
-	getPrice();
+	//getPrice();
 });
 
 Pebble.addEventListener("appmessage", function(e) {
-	console.log(e.type);
+	console.log("message! " + e.type);
 	console.log(e.payload);
-	console.log("message!");
 	getPrice();
-	
-
 });
 
 Pebble.addEventListener("showConfiguration", function() {
@@ -77,11 +76,13 @@ Pebble.addEventListener("showConfiguration", function() {
 	console.log("showing configuration");
 	var uri = 'http://kabili207.github.io/BitWatcher/config.html?config=' + encodeURIComponent(JSON.stringify(options));
 	//var uri = 'http://zyrenth.com/~kabili/config.html?config=' + encodeURIComponent(JSON.stringify(options));
+	configuring = true;
 	Pebble.openURL(uri);
 });
 
 Pebble.addEventListener("webviewclosed", function(e) {
 	console.log("configuration closed");
+	configuring = false;
 	if (e.response != '') {
 		var options = JSON.parse(e.response);
 		console.log("storing options: " + JSON.stringify(options));
