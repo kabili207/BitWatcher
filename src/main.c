@@ -95,8 +95,8 @@ static void timer_callback(void *data) {
 }
 
 static void set_timer() {
-	// Update again in fifteen minutes.
-	const uint32_t timeout_ms = 1740000;
+	// Update again in 30 minutes.
+	const uint32_t timeout_ms = 30 * 60 * 1000;
 	timer = app_timer_register(timeout_ms, timer_callback, NULL);
 }
 
@@ -140,10 +140,11 @@ static void window_load(Window *window) {
 	font_last_price_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_29));
 	font_last_price_large = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_39));
 	
-	text_price_layer = text_layer_create(GRect(8, 0, 144-8, 168-0));
+	text_price_layer = text_layer_create(GRect(0, 0, 144-0, 168-0));
 	text_layer_set_text_color(text_price_layer, GColorWhite);
 	text_layer_set_background_color(text_price_layer, GColorClear);
 	text_layer_set_font(text_price_layer, font_last_price_large);
+	text_layer_set_text_alignment(text_price_layer, GTextAlignmentCenter);
 	layer_add_child(window_layer, text_layer_get_layer(text_price_layer));
 	
 	text_currency_layer = text_layer_create(GRect(8, 41, 144-8, 168-41));
