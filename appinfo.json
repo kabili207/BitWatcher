@@ -1,5 +1,5 @@
 {
-    "versionLabel": "1.1",
+    "versionLabel": "1.2",
     "uuid": "0A477443-FB0A-4039-967F-7608276EEC45",
     "appKeys": {
 	    "currency": 1,
@@ -10,7 +10,7 @@
 	    "invert": 6
 	},
     "longName": "BitWatcher",
-    "versionCode": 2,
+    "versionCode": 3,
     "shortName": "BitWatcher",
     "companyName": "kabili207",
     "capabilities": [ "configurable" ],
