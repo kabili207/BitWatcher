@@ -36,16 +36,19 @@
 				var ddlCurrency = document.getElementById("ddlCurrency");
 				var ddlExchange = document.getElementById("ddlExchange");
 				var chkAverage = document.getElementById("chkAverage");
-				var chkNoGox = document.getElementById("chkNoGox");
+				//var chkNoGox = document.getElementById("chkNoGox");
+				var chkInvert = document.getElementById("chkInvert");
 				var config = JSON.parse(params["config"]);
 				ddlCurrency.value = config.currency;
 				$(ddlCurrency).selectmenu('refresh', true);
 				currencyChanged();
 				ddlExchange.value = config.exchange;
+				chkInvert.value = config.invert ? "true" : "false";
 				chkAverage.checked = config.average;
-				chkNoGox.checked = config.noGox;
+				//chkNoGox.checked = config.noGox;
 				$(chkAverage).checkboxradio('refresh');
-				$(chkNoGox).checkboxradio('refresh');
+				//$(chkNoGox).checkboxradio('refresh');
+				$(chkInvert).slider('refresh');
 			}
 		}
 		
@@ -104,11 +107,11 @@
 		function averageChanged() {
 			var ddlExchange = document.getElementById("ddlExchange");
 			var chkAverage = document.getElementById("chkAverage");
-			var chkNoGox = document.getElementById("chkNoGox");
+			//var chkNoGox = document.getElementById("chkNoGox");
 			
-			chkNoGox.disabled = !chkAverage.checked;
+			//chkNoGox.disabled = !chkAverage.checked;
+			//$(chkNoGox).checkboxradio('refresh');
 			ddlExchange.disabled = chkAverage.checked;
-			$(chkNoGox).checkboxradio('refresh');
 			// Refresh doesn't seem to update the disabled status...
 			$(ddlExchange).selectmenu(ddlExchange.disabled ? 'disable' : 'enable');
 			return true;
@@ -118,16 +121,17 @@
 			var ddlCurrency = document.getElementById("ddlCurrency");
 			var ddlExchange = document.getElementById("ddlExchange");
 			var chkAverage = document.getElementById("chkAverage");
-			var chkNoGox = document.getElementById("chkNoGox");
+			//var chkNoGox = document.getElementById("chkNoGox");
 			
 			var config = {
 				currency: ddlCurrency.options[ddlCurrency.selectedIndex].value,
 				exchange: chkAverage.checked ? "" : ddlExchange.options[ddlExchange.selectedIndex].value,
 				average: chkAverage.checked,
-				noGox: chkNoGox.checked
+				noGox: false, //chkNoGox.checked,
+				invert: ($('#chkInvert').val() == "true") 
 			}
 			
-			window.location.href = "pebblejs:///close#" + JSON.stringify(config);
+			window.location.href = "pebblejs:///close#" + encodeURIComponent(JSON.stringify(config));
 			
 		}
 		
@@ -145,12 +149,17 @@
 			<input type="checkbox" id="chkAverage" onclick="averageChanged()" />
 			<label for="chkAverage">Average</label>
 			
-			<input type="checkbox" id="chkNoGox" />
-			<label for="chkNoGox">Ignore MtGox</label>
+			<!--<input type="checkbox" id="chkNoGox" />
+			<label for="chkNoGox">Ignore MtGox</label>-->
 			
 			<label for="ddlExchange">Exchange</label>
 			<select id="ddlExchange"></select>
-
+			
+			<label for="chkInvert">Invert colors:</label>
+			<select name="chkInvert" id="chkInvert" data-role="slider">
+				<option value="false">No</option>
+				<option value="true">Yes</option>
+			</select>
 			<br />
 
 			<input type="button" onclick="save()" value="Save" />
