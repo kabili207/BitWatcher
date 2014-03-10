@@ -8,7 +8,8 @@ enum {
 	BTC_KEY_EXCHANGE = 2,
 	BTC_KEY_ASK = 3,
 	BTC_KEY_BID = 4,
-	BTC_KEY_LAST = 5
+	BTC_KEY_LAST = 5,
+	INVERT_COLOR_KEY = 6
 };
 	
 
@@ -25,6 +26,8 @@ static TextLayer *text_buy_label_layer;
 static TextLayer *text_buy_price_layer;
 static TextLayer *text_sell_label_layer;
 static TextLayer *text_sell_price_layer;
+
+static InverterLayer *inverter_layer = NULL;
 
 static GFont font_last_price_small;
 static GFont font_last_price_large;
@@ -43,10 +46,26 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
 	APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error: %d, %d", app_message_error, dict_error);
 }
 
+static void set_invert_color(bool invert) {
+	if (invert && inverter_layer == NULL) {
+		// Add inverter layer
+		Layer *window_layer = window_get_root_layer(window);
+
+		inverter_layer = inverter_layer_create(GRect(0, 0, 144, 168));
+		layer_add_child(window_layer, inverter_layer_get_layer(inverter_layer));
+	} else if (!invert && inverter_layer != NULL) {
+		// Remove Inverter layer
+		layer_remove_from_parent(inverter_layer_get_layer(inverter_layer));
+		inverter_layer_destroy(inverter_layer);
+		inverter_layer = NULL;
+	}
+	// No action required
+}
+
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
 	
 	static char str[35] = "";
-	
+	bool invert;
 	switch (key) {
 		case BTC_KEY_LAST:
 			text_layer_set_text(text_price_layer, new_tuple->value->cstring);
@@ -68,6 +87,11 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
 		case BTC_KEY_CURRENCY:
 			snprintf(str, sizeof(str), "%s / BTC", new_tuple->value->cstring);
 			text_layer_set_text(text_currency_layer, str);
+			break;
+		case INVERT_COLOR_KEY:
+			invert = new_tuple->value->uint8 != 0;
+			persist_write_bool(INVERT_COLOR_KEY, invert);
+			set_invert_color(invert);
 			break;
 	}
 }
@@ -203,6 +227,7 @@ static void window_load(Window *window) {
 		TupletCString(BTC_KEY_BID, "---"),
 		TupletCString(BTC_KEY_LAST, "---"),
 		TupletCString(BTC_KEY_EXCHANGE, "---"),
+		TupletInteger(INVERT_COLOR_KEY, persist_read_bool(INVERT_COLOR_KEY)),
 	};
 	
 	app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values),

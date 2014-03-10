@@ -6,7 +6,8 @@
 	    "exchange": 2,
 	    "ask": 3,
 	    "bid": 4,
-	    "last": 5
+	    "last": 5,
+	    "invert": 6
 	},
     "longName": "BitWatcher",
     "versionCode": 2,

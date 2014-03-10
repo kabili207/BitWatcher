@@ -5,7 +5,7 @@ function getOptions() {
 	var options = JSON.parse(window.localStorage.getItem('options'));
 	
 	if(options == null) {
-		options = { currency: "USD", exchange: "", average: true, noGox: true };
+		options = { currency: "USD", exchange: "", average: true, noGox: true, invert: false };
 		window.localStorage.setItem('options', JSON.stringify(options));
 	}
 	return options;
@@ -38,10 +38,11 @@ function getPrice() {
 					rates = response[options.exchange].rates;
 				var message = {
 					"currency": options.currency,
-					"exchange" : options.average ? "average" + (options.noGox ? " (no mtgox)" : "") : options.exchange,
+					"exchange" : options.average ? "average" : options.exchange,
 					"ask": rates.ask.toString(),
 					"bid": rates.bid.toString(),
-					"last": rates.last.toString()
+					"last": rates.last.toString(),
+					"invert": options.invert ? 1 : 0
 				};
 				if(!configuring){
 					console.log("Sending...");
@@ -84,7 +85,7 @@ Pebble.addEventListener("webviewclosed", function(e) {
 	console.log("configuration closed");
 	configuring = false;
 	if (e.response != '') {
-		var options = JSON.parse(e.response);
+		var options = JSON.parse(decodeURIComponent(e.response));
 		console.log("storing options: " + JSON.stringify(options));
 		window.localStorage.setItem('options', JSON.stringify(options));
 		getPrice();
