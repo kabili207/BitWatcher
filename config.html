@@ -135,6 +135,11 @@
 			
 		}
 		
+		$().ready(function() {
+			$('#btnSave').click(function() {
+			  save();
+			});
+		});
 	</script>
 
 </head>
@@ -162,7 +167,7 @@
 			</select>
 			<br />
 
-			<input type="button" onclick="save()" value="Save" />
+			<button type='submit'id="btnSave">Save</button>
 
 		</div>
 		<script type="text/javascript">
