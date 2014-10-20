@@ -212,7 +212,7 @@ static void window_load(Window *window) {
 	text_time_layer = text_layer_create(GRect(7, 114, 144-7, 168-114));
 	text_layer_set_text_color(text_time_layer, GColorWhite);
 	text_layer_set_background_color(text_time_layer, GColorClear);
-	text_layer_set_font(text_time_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_HEAVY_45)));
+	text_layer_set_font(text_time_layer, fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_HEAVY_44)));
 	layer_add_child(window_layer, text_layer_get_layer(text_time_layer));
 	
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);

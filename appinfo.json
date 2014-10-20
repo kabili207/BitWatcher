@@ -1,63 +1,66 @@
 {
-    "versionLabel": "1.2",
-    "uuid": "0A477443-FB0A-4039-967F-7608276EEC45",
     "appKeys": {
-	    "currency": 1,
-	    "exchange": 2,
-	    "ask": 3,
-	    "bid": 4,
-	    "last": 5,
-	    "invert": 6
-	},
-    "longName": "BitWatcher",
-    "versionCode": 3,
-    "shortName": "BitWatcher",
-    "companyName": "kabili207",
-    "capabilities": [ "configurable" ],
-    "watchapp": {
-        "watchface": true
+        "ask": 3,
+        "bid": 4,
+        "currency": 1,
+        "exchange": 2,
+        "invert": 6,
+        "last": 5
     },
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "kabili207",
+    "longName": "BitWatcher",
+    "projectType": "native",
     "resources": {
         "media": [
             {
-                "menuIcon": true,
-                "type": "png",
-                "name": "IMAGE_MENU_ICON",
-                "file": "images/menu_icon_bitwallet.png"
+                "file": "fonts/Diavlo_BOOK_II_37.ttf",
+                "name": "FONT_DIAVLO_15",
+                "type": "font"
             },
             {
-                "type": "font",
-                "name": "FONT_DIAVLO_LIGHT_15",
-                "file": "fonts/Diavlo_LIGHT_II_37.ttf"
+                "characterRegex": "[0-9:. +-]",
+                "file": "fonts/Diavlo_MEDIUM_II_37.ttf",
+                "name": "FONT_DIAVLO_MEDIUM_29",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Diavlo_MEDIUM_II_37.ttf",
+                "name": "FONT_DIAVLO_MEDIUM_19",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9:. +-]",
+                "file": "fonts/Diavlo_MEDIUM_II_37.ttf",
+                "name": "FONT_DIAVLO_MEDIUM_39",
+                "type": "font"
             },
             {
                 "characterRegex": "[0-9:.]",
-                "type": "font",
-                "name": "FONT_DIAVLO_HEAVY_45",
-                "file": "fonts/Diavlo_BLACK_II_37.ttf"
+                "file": "fonts/Diavlo_BLACK_II_37.ttf",
+                "name": "FONT_DIAVLO_HEAVY_44",
+                "type": "font"
             },
             {
-                "characterRegex": "[0-9:. +-]",
-                "type": "font",
-                "name": "FONT_DIAVLO_MEDIUM_39",
-                "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
+                "file": "fonts/Diavlo_LIGHT_II_37.ttf",
+                "name": "FONT_DIAVLO_LIGHT_15",
+                "type": "font"
             },
             {
-                "type": "font",
-                "name": "FONT_DIAVLO_MEDIUM_19",
-                "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
-            },
-            {
-                "characterRegex": "[0-9:. +-]",
-                "type": "font",
-                "name": "FONT_DIAVLO_MEDIUM_29",
-                "file": "fonts/Diavlo_MEDIUM_II_37.ttf"
-            },
-            {
-                "type": "font",
-                "name": "FONT_DIAVLO_15",
-                "file": "fonts/Diavlo_BOOK_II_37.ttf"
+                "file": "images/menu_icon_bitwallet.png",
+                "menuIcon": true,
+                "name": "IMAGE_MENU_ICON",
+                "type": "png"
             }
         ]
+    },
+    "shortName": "BitWatcher",
+    "uuid": "0A477443-FB0A-4039-967F-7608276EEC45",
+    "versionCode": 3,
+    "versionLabel": "1.2",
+    "watchapp": {
+        "watchface": true
     }
 }
