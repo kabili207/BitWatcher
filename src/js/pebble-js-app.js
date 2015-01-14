@@ -1,12 +1,11 @@
-var initialized = false;
 var configuring = false;
 
 function getOptions() {
-	var options = JSON.parse(window.localStorage.getItem('options'));
+	var options = JSON.parse(localStorage.getItem('options'));
 	
-	if(options == null) {
+	if(! options) {
 		options = { currency: "USD", exchange: "", average: true, noGox: true, invert: false };
-		window.localStorage.setItem('options', JSON.stringify(options));
+		localStorage.setItem('options', JSON.stringify(options));
 	}
 	return options;
 }
@@ -21,10 +20,7 @@ function getPrice() {
 	var rates;
 	
 	if(options.average) {
-		if(options.noGox)
-			url = "https://api.bitcoinaverage.com/no-mtgox/ticker/" + options.currency;
-		else
-			url = "https://api.bitcoinaverage.com/ticker/" + options.currency;
+		url = "https://api.bitcoinaverage.com/ticker/" + options.currency;
 	} else {
 		url = "https://api.bitcoinaverage.com/exchanges/" + options.currency;
 	}
@@ -55,7 +51,7 @@ function getPrice() {
 				console.log("Error " + req.status);
 			}
 		}
-	}
+	};
 	req.send(null);
 }
 
@@ -84,10 +80,10 @@ Pebble.addEventListener("showConfiguration", function() {
 Pebble.addEventListener("webviewclosed", function(e) {
 	console.log("configuration closed");
 	configuring = false;
-	if (e.response != '') {
+	if (e.response !== '') {
 		var options = JSON.parse(decodeURIComponent(e.response));
 		console.log("storing options: " + JSON.stringify(options));
-		window.localStorage.setItem('options', JSON.stringify(options));
+		localStorage.setItem('options', JSON.stringify(options));
 		getPrice();
 	} else {
 		console.log("no options received");
