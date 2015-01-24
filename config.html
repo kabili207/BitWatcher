@@ -16,7 +16,7 @@
 		var ddlCurrency;
 		
 		var params = {};
-
+		params['return_to'] = 'pebblejs://close#';
 		if (location.search) {
 			var parts = location.search.substring(1).split('&');
 
@@ -131,7 +131,8 @@
 				invert: ($('#chkInvert').val() == "true") 
 			}
 			
-			location.href = "pebblejs:///close#" + encodeURIComponent(JSON.stringify(config));
+			var return_to = params['return_to'];
+			location.href = return_to + encodeURIComponent(JSON.stringify(config));
 			
 		}
 		
