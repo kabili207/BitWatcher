@@ -56,10 +56,15 @@
             }
         ]
     },
+    "sdkVersion": "3",
     "shortName": "BitWatcher",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
     "uuid": "0A477443-FB0A-4039-967F-7608276EEC45",
-    "versionCode": 3,
-    "versionLabel": "1.4",
+    "versionLabel": "1.5",
     "watchapp": {
         "watchface": true
     }
