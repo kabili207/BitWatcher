@@ -14,6 +14,7 @@ enum {
 	
 
 static Window *window;
+static Layer *window_layer;
 static AppTimer *timer;
 static AppSync sync;
 static uint8_t sync_buffer[124];
@@ -46,25 +47,25 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
 
 static void set_invert_color(bool invert) {
 	if (invert) {
-    window_set_background_color(window, GColorWhite);
-    text_layer_set_text_color(text_date_layer, GColorBlack);
-    text_layer_set_text_color(text_time_layer, GColorBlack);
-    text_layer_set_text_color(text_price_layer, GColorBlack);
-    text_layer_set_text_color(text_currency_layer, GColorBlack);
-    text_layer_set_text_color(text_buy_label_layer, GColorBlack);
-    text_layer_set_text_color(text_buy_price_layer, GColorBlack);
-    text_layer_set_text_color(text_sell_label_layer, GColorBlack);
-    text_layer_set_text_color(text_sell_price_layer, GColorBlack);
+		window_set_background_color(window, GColorWhite);
+		text_layer_set_text_color(text_date_layer, GColorBlack);
+		text_layer_set_text_color(text_time_layer, GColorBlack);
+		text_layer_set_text_color(text_price_layer, GColorBlack);
+		text_layer_set_text_color(text_currency_layer, GColorBlack);
+		text_layer_set_text_color(text_buy_label_layer, GColorBlack);
+		text_layer_set_text_color(text_buy_price_layer, GColorBlack);
+		text_layer_set_text_color(text_sell_label_layer, GColorBlack);
+		text_layer_set_text_color(text_sell_price_layer, GColorBlack);
 	} else {
-    window_set_background_color(window, GColorBlack);
-    text_layer_set_text_color(text_date_layer, GColorWhite);
-    text_layer_set_text_color(text_time_layer, GColorWhite);
-    text_layer_set_text_color(text_price_layer, GColorWhite);
-    text_layer_set_text_color(text_currency_layer, GColorWhite);
-    text_layer_set_text_color(text_buy_label_layer, GColorWhite);
-    text_layer_set_text_color(text_buy_price_layer, GColorWhite);
-    text_layer_set_text_color(text_sell_label_layer, GColorWhite);
-    text_layer_set_text_color(text_sell_price_layer, GColorWhite);
+		window_set_background_color(window, GColorBlack);
+		text_layer_set_text_color(text_date_layer, GColorWhite);
+		text_layer_set_text_color(text_time_layer, GColorWhite);
+		text_layer_set_text_color(text_price_layer, GColorWhite);
+		text_layer_set_text_color(text_currency_layer, GColorWhite);
+		text_layer_set_text_color(text_buy_label_layer, GColorWhite);
+		text_layer_set_text_color(text_buy_price_layer, GColorWhite);
+		text_layer_set_text_color(text_sell_label_layer, GColorWhite);
+		text_layer_set_text_color(text_sell_price_layer, GColorWhite);
 	}
 }
 
@@ -165,7 +166,7 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void create_text_layer(TextLayer** text_layer, Layer* window_layer, GRect bounds, GColor color, uint32_t font_id) {
-  *text_layer = text_layer_create(bounds);
+	*text_layer = text_layer_create(bounds);
 	text_layer_set_text_color(*text_layer, color);
 	text_layer_set_background_color(*text_layer, GColorClear);
 	text_layer_set_font(*text_layer, fonts_load_custom_font(resource_get_handle(font_id)));
@@ -173,110 +174,110 @@ static void create_text_layer(TextLayer** text_layer, Layer* window_layer, GRect
 }
 
 static void window_load(Window *window) {
-	Layer *window_layer = window_get_root_layer(window);
+	window_layer = window_get_root_layer(window);
 	GRect bounds = layer_get_bounds(window_layer);
 	
 	font_last_price_small = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_29));
 	font_last_price_large = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DIAVLO_MEDIUM_39));
 	
-  GRect text_bounds;
+	GRect text_bounds;
   
-  // Price
-  #ifdef PBL_RECT
-  text_bounds = GRect(0, 0, bounds.size.w, 40);
-  #elif PBL_ROUND
-  text_bounds = GRect(0, 18, bounds.size.w, 40);
-  #endif
-  create_text_layer(&text_price_layer, window_layer, text_bounds,
+	// Price
+	#ifdef PBL_RECT
+	text_bounds = GRect(0, 0, bounds.size.w, 40);
+	#elif PBL_ROUND
+	text_bounds = GRect(0, 18, bounds.size.w, 40);
+	#endif
+	create_text_layer(&text_price_layer, window_layer, text_bounds,
                     GColorWhite, RESOURCE_ID_FONT_DIAVLO_MEDIUM_39);
 	text_layer_set_text_alignment(text_price_layer, GTextAlignmentCenter);
 	
-  // Currency
-  #ifdef PBL_RECT
-  text_bounds = GRect(8, 41, bounds.size.w, 18);
-  #elif PBL_ROUND
-  text_bounds = GRect(0, 7, bounds.size.w, 18);
-  #endif
-  create_text_layer(&text_currency_layer, window_layer, text_bounds,
+	// Currency
+	#ifdef PBL_RECT
+	text_bounds = GRect(8, 41, bounds.size.w, 18);
+	#elif PBL_ROUND
+	text_bounds = GRect(0, 7, bounds.size.w, 18);
+	#endif
+	create_text_layer(&text_currency_layer, window_layer, text_bounds,
                     GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
-  #ifdef PBL_ROUND
-  text_layer_set_text_alignment(text_currency_layer, GTextAlignmentCenter);
-  #endif
+	#ifdef PBL_ROUND
+	text_layer_set_text_alignment(text_currency_layer, GTextAlignmentCenter);
+	#endif
   
-  // Buy label
-  #ifdef PBL_RECT
-  text_bounds = GRect(8, 60, bounds.size.w, 18);
-  #elif PBL_ROUND
-  text_bounds = GRect(0, 60, bounds.size.w / 2, 18);
-  #endif
-  create_text_layer(&text_buy_label_layer, window_layer, text_bounds,
-                    GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
-  text_layer_set_text(text_buy_label_layer, "BUY");
-  #if PBL_ROUND
-  text_layer_set_text_alignment(text_buy_label_layer, GTextAlignmentCenter);
-  #endif	
+	// Buy label
+	#ifdef PBL_RECT
+	text_bounds = GRect(8, 60, bounds.size.w, 18);
+	#elif PBL_ROUND
+	text_bounds = GRect(0, 60, bounds.size.w / 2, 18);
+	#endif
+	create_text_layer(&text_buy_label_layer, window_layer, text_bounds,
+					  GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
+	text_layer_set_text(text_buy_label_layer, "BUY");
+	#if PBL_ROUND
+	text_layer_set_text_alignment(text_buy_label_layer, GTextAlignmentCenter);
+	#endif
 	
-  // Buy price
-  #ifdef PBL_RECT
-  text_bounds = GRect(56, 60, bounds.size.w, 18);
-  #elif PBL_ROUND
-  text_bounds = GRect(0, 78, bounds.size.w / 2, 18);
-  #endif
-  create_text_layer(&text_buy_price_layer, window_layer, text_bounds,
-                    GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
-  #if PBL_ROUND
-  text_layer_set_text_alignment(text_buy_price_layer, GTextAlignmentCenter);
-  #endif	
+	// Buy price
+	#ifdef PBL_RECT
+	text_bounds = GRect(56, 60, bounds.size.w, 18);
+	#elif PBL_ROUND
+	text_bounds = GRect(0, 78, bounds.size.w / 2, 18);
+	#endif
+	create_text_layer(&text_buy_price_layer, window_layer, text_bounds,
+					  GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
+	#if PBL_ROUND
+	text_layer_set_text_alignment(text_buy_price_layer, GTextAlignmentCenter);
+	#endif
   
-  // Sell label
-  #ifdef PBL_RECT
-  text_bounds = GRect(8, 78, bounds.size.w, 18);
-  #elif PBL_ROUND
-  text_bounds = GRect(bounds.size.w / 2, 60, bounds.size.w / 2, 18);
-  #endif
-  create_text_layer(&text_sell_label_layer, window_layer, text_bounds,
-                    GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
+	// Sell label
+	#ifdef PBL_RECT
+	text_bounds = GRect(8, 78, bounds.size.w, 18);
+	#elif PBL_ROUND
+	text_bounds = GRect(bounds.size.w / 2, 60, bounds.size.w / 2, 18);
+	#endif
+	create_text_layer(&text_sell_label_layer, window_layer, text_bounds,
+					  GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
 	text_layer_set_text(text_sell_label_layer, "SELL");
-  #if PBL_ROUND
-  text_layer_set_text_alignment(text_sell_label_layer, GTextAlignmentCenter);
-  #endif	
-	
-  // Sell price
-  #ifdef PBL_RECT
-  text_bounds = GRect(56, 78, bounds.size.w, 18);
-  #elif PBL_ROUND
-  text_bounds = GRect(bounds.size.w / 2, 78, bounds.size.w / 2, 18);
-  #endif
-  create_text_layer(&text_sell_price_layer, window_layer, text_bounds,
-                    GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
-  #if PBL_ROUND
-  text_layer_set_text_alignment(text_sell_price_layer, GTextAlignmentCenter);
-  #endif	
+	#if PBL_ROUND
+	text_layer_set_text_alignment(text_sell_label_layer, GTextAlignmentCenter);
+	#endif
 
-  // Date
-  #ifdef PBL_RECT
-  text_bounds = GRect(8, 96, bounds.size.w, 25);
-  #elif PBL_ROUND
-  text_bounds = GRect(0, 135, bounds.size.w, 25);
-  #endif
-  create_text_layer(&text_date_layer, window_layer, text_bounds,
-                    GColorWhite, RESOURCE_ID_FONT_DIAVLO_MEDIUM_19);
-  #if PBL_ROUND
-  text_layer_set_text_alignment(text_date_layer, GTextAlignmentCenter);
-  #endif	
+	// Sell price
+	#ifdef PBL_RECT
+	text_bounds = GRect(56, 78, bounds.size.w, 18);
+	#elif PBL_ROUND
+	text_bounds = GRect(bounds.size.w / 2, 78, bounds.size.w / 2, 18);
+	#endif
+	create_text_layer(&text_sell_price_layer, window_layer, text_bounds,
+					  GColorWhite, RESOURCE_ID_FONT_DIAVLO_15);
+	#if PBL_ROUND
+	text_layer_set_text_alignment(text_sell_price_layer, GTextAlignmentCenter);
+	#endif
+
+	// Date
+	#ifdef PBL_RECT
+	text_bounds = GRect(8, 96, bounds.size.w, 25);
+	#elif PBL_ROUND
+	text_bounds = GRect(0, 135, bounds.size.w, 25);
+	#endif
+	create_text_layer(&text_date_layer, window_layer, text_bounds,
+					  GColorWhite, RESOURCE_ID_FONT_DIAVLO_MEDIUM_19);
+	#if PBL_ROUND
+	text_layer_set_text_alignment(text_date_layer, GTextAlignmentCenter);
+	#endif
 	
   
-  // Time
-  #ifdef PBL_RECT
-  text_bounds = GRect(7, 114, bounds.size.w, 45);
-  #elif PBL_ROUND
-  text_bounds = GRect(0, 90, bounds.size.w, 45);
-  #endif
-  create_text_layer(&text_time_layer, window_layer, text_bounds,
-                    GColorWhite, RESOURCE_ID_FONT_DIAVLO_HEAVY_44);
-  #if PBL_ROUND
-  text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
-  #endif	
+	// Time
+	#ifdef PBL_RECT
+	text_bounds = GRect(7, 114, bounds.size.w, 45);
+	#elif PBL_ROUND
+	text_bounds = GRect(0, 90, bounds.size.w, 45);
+	#endif
+	create_text_layer(&text_time_layer, window_layer, text_bounds,
+					  GColorWhite, RESOURCE_ID_FONT_DIAVLO_HEAVY_44);
+	#if PBL_ROUND
+	text_layer_set_text_alignment(text_time_layer, GTextAlignmentCenter);
+	#endif
   
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 	
@@ -304,8 +305,11 @@ static void window_load(Window *window) {
 
 static void window_unload(Window *window) {
 	app_sync_deinit(&sync);
+	app_message_deregister_callbacks();
 	
 	tick_timer_service_unsubscribe();
+	
+	app_timer_cancel(timer);
 	
 	text_layer_destroy(text_date_layer);
 	text_layer_destroy(text_time_layer);
@@ -315,6 +319,9 @@ static void window_unload(Window *window) {
 	text_layer_destroy(text_buy_price_layer);
 	text_layer_destroy(text_sell_label_layer);
 	text_layer_destroy(text_sell_price_layer);
+	
+	fonts_unload_custom_font(font_last_price_small);
+	fonts_unload_custom_font(font_last_price_large);
 }
 
 static void init(void) {

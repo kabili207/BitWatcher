@@ -1,0 +1,77 @@
+{
+    "author": "kabili207",
+    "dependencies": {},
+    "keywords": [],
+    "name": "bitwatcher",
+    "pebble": {
+        "capabilities": [
+            "configurable"
+        ],
+        "displayName": "BitWatcher",
+        "enableMultiJS": false,
+        "messageKeys": {
+            "ask": 3,
+            "bid": 4,
+            "currency": 1,
+            "exchange": 2,
+            "invert": 6,
+            "last": 5
+        },
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/menu_icon_bitwallet.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_MENU_ICON",
+                    "type": "bitmap"
+                },
+                {
+                    "characterRegex": "[0-9:. +-]",
+                    "file": "fonts/Diavlo_MEDIUM_II_37.ttf",
+                    "name": "FONT_DIAVLO_MEDIUM_39",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/Diavlo_MEDIUM_II_37.ttf",
+                    "name": "FONT_DIAVLO_MEDIUM_19",
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9:. +-]",
+                    "file": "fonts/Diavlo_MEDIUM_II_37.ttf",
+                    "name": "FONT_DIAVLO_MEDIUM_29",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/Diavlo_LIGHT_II_37.ttf",
+                    "name": "FONT_DIAVLO_LIGHT_15",
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/Diavlo_BOOK_II_37.ttf",
+                    "name": "FONT_DIAVLO_15",
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9:.]",
+                    "file": "fonts/Diavlo_BLACK_II_37.ttf",
+                    "name": "FONT_DIAVLO_HEAVY_44",
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite"
+        ],
+        "uuid": "0A477443-FB0A-4039-967F-7608276EEC45",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.6.0"
+}
